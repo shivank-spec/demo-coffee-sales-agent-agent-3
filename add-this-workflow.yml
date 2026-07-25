@@ -1,0 +1,44 @@
+name: Agent Message Handler
+
+# The agent replies to new issues, issue comments, repository_dispatch events
+# (type: agent-message), and manual workflow_dispatch runs.
+#
+# REQUIRED ONE-TIME SETUP (done by YOU, never by the build platform):
+#   Settings -> Secrets and variables -> Actions -> New repository secret
+#   Name:  ANTHROPIC_API_KEY
+#   Value: your own Anthropic API key
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+  repository_dispatch:
+    types: [agent-message]
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "Message for the agent"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  respond:
+    # Never respond to our own bot comments (prevents infinite loops).
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run agent
+        run: node agent.js
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AGENT_MESSAGE: ${{ github.event.inputs.message || github.event.comment.body || github.event.issue.body || github.event.client_payload.message }}
