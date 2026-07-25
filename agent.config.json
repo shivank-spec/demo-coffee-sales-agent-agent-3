@@ -1,0 +1,45 @@
+{
+  "name": "demo-coffee-sales-agent",
+  "version": "1.0.0",
+  "createdAt": "2026-07-25T16:19:49.038Z",
+  "createdBy": "shivank-spec",
+  "model": "claude-opus-4-8",
+  "entry": "agent.js",
+  "runtime": "node>=20",
+  "skillSource": "shivank-spec/foundry-skills@main",
+  "skills": [
+    {
+      "name": "faq-answerer",
+      "version": "embedded",
+      "priority": 10
+    },
+    {
+      "name": "follow_up",
+      "version": "0.0.0",
+      "priority": 100
+    },
+    {
+      "name": "check_availability",
+      "version": "0.0.0",
+      "priority": 100
+    },
+    {
+      "name": "send_invoice",
+      "version": "0.0.0",
+      "priority": 100
+    }
+  ],
+  "skippedSkills": [],
+  "secrets": {
+    "required": [
+      "ANTHROPIC_API_KEY"
+    ],
+    "note": "This secret is YOUR key, added by YOU. No shared or platform credential is ever used.",
+    "setup": [
+      "Open https://github.com/shivank-spec/demo-coffee-sales-agent-agent-3/settings/secrets/actions",
+      "Click \"New repository secret\".",
+      "Name it ANTHROPIC_API_KEY and paste YOUR OWN Anthropic API key as the value.",
+      "Save. The agent workflow reads it at run time; the build platform never sees it."
+    ]
+  }
+}
